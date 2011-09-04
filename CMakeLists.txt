@@ -119,7 +119,7 @@ add_executable(LandscapeApp WIN32 ${HDRS} ${SRCS})
 
 set_target_properties(LandscapeApp PROPERTIES DEBUG_POSTFIX _d)
 
-target_link_libraries(LandscapeApp ${OGRE_LIBRARIES} ${OIS_LIBRARIES} Caelum)
+target_link_libraries(LandscapeApp ${OGRE_LIBRARIES} ${OGRE_Terrain_LIBRARIES} ${OIS_LIBRARIES} Caelum)
 
 if(WIN32)
 	install(TARGETS LandscapeApp

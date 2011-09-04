@@ -17,6 +17,9 @@ This source file is part of the
 #ifndef __LandscapeApplication_hpp__
 #define __LandscapeApplication_hpp__
 
+#include <Terrain/OgreTerrain.h>
+#include <Terrain/OgreTerrainGroup.h>
+
 #include <Caelum.h>
 
 #include "BaseApplication.hpp"
@@ -31,6 +34,8 @@ protected:
 	virtual void createScene(void);
 
 	Caelum::CaelumSystem* mCaelumSystem;
+	Ogre::TerrainGlobalOptions* mTerrainGlobals;
+	Ogre::TerrainGroup* mTerrainGroup;
 };
 
 #endif // #ifndef __LandscapeApplication_hpp__

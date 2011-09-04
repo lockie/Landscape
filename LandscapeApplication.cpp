@@ -44,6 +44,31 @@ void LandscapeApplication::createScene(void)
 	cloudLayer->setCloudSpeed(Vector2(0.0001f, 0.0001f));							//  скорость
 	cloudLayer->setHeight(5000);													//  и высоту
 
+	// Земля
+	mCamera->setPosition(Vector3(1683, 50, 2116));									// направляем камеру
+	mCamera->lookAt(Vector3(1963, 50, 1660));
+
+	Vector3 lightdir(0.55f, -0.3f, 0.75f);											// свет для статического освещения местности
+	lightdir.normalise();
+	Light* light = mSceneMgr->createLight("tstLight");
+	light->setType(Light::LT_DIRECTIONAL);
+	light->setDirection(lightdir);
+	light->setDiffuseColour(ColourValue::White);
+	light->setSpecularColour(ColourValue(0.4f, 0.4f, 0.4f));
+
+	mTerrainGlobals = OGRE_NEW TerrainGlobalOptions;								// глобальные настройки местности
+	mTerrainGroup = OGRE_NEW TerrainGroup(mSceneMgr,								// группа страниц местности
+		Terrain::ALIGN_X_Z, 513, 12000);
+	mTerrainGroup->setOrigin(Vector3::ZERO);
+	mTerrainGlobals->setLightMapDirection(light->getDerivedDirection());
+	mTerrainGlobals->setCompositeMapAmbient(mSceneMgr->getAmbientLight());
+	mTerrainGlobals->setCompositeMapDiffuse(light->getDiffuseColour());
+	mSceneMgr->destroyLight("tstLight");
+
+	mTerrainGroup->defineTerrain(0, 0);												// обозначаем наше намерение загрузить страницу с координатой (0, 0)
+	mTerrainGroup->loadAllTerrains(true);											// собственно, загружаем все запрошенные страницы в синхронном режиме
+	mTerrainGroup->freeTemporaryResources();										// прибираемся
+
 }
 
 
