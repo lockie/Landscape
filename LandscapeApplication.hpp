@@ -17,6 +17,8 @@ This source file is part of the
 #ifndef __LandscapeApplication_hpp__
 #define __LandscapeApplication_hpp__
 
+#include <Caelum.h>
+
 #include "BaseApplication.hpp"
 
 class LandscapeApplication : public BaseApplication
@@ -27,6 +29,8 @@ public:
 
 protected:
 	virtual void createScene(void);
+
+	Caelum::CaelumSystem* mCaelumSystem;
 };
 
 #endif // #ifndef __LandscapeApplication_hpp__

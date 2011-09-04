@@ -109,13 +109,17 @@ set(SRCS
 include_directories( ${OIS_INCLUDE_DIRS}
 	${OGRE_INCLUDE_DIRS}
 	${OGRE_SAMPLES_INCLUDEPATH}
+	"Caelum/main/include"
+	"${CMAKE_BINARY_DIR}/Caelum/main/include"
 )
+
+add_subdirectory(Caelum)
 
 add_executable(LandscapeApp WIN32 ${HDRS} ${SRCS})
 
 set_target_properties(LandscapeApp PROPERTIES DEBUG_POSTFIX _d)
 
-target_link_libraries(LandscapeApp ${OGRE_LIBRARIES} ${OIS_LIBRARIES})
+target_link_libraries(LandscapeApp ${OGRE_LIBRARIES} ${OIS_LIBRARIES} Caelum)
 
 if(WIN32)
 	install(TARGETS LandscapeApp

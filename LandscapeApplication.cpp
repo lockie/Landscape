@@ -16,6 +16,9 @@ This source file is part of the
 */
 #include "LandscapeApplication.hpp"
 
+using namespace Ogre;
+using namespace Caelum;
+
 //-------------------------------------------------------------------------------------
 LandscapeApplication::LandscapeApplication(void)
 {
@@ -28,7 +31,19 @@ LandscapeApplication::~LandscapeApplication(void)
 //-------------------------------------------------------------------------------------
 void LandscapeApplication::createScene(void)
 {
-	// create your scene here :)
+	// Небо
+	mCaelumSystem = new CaelumSystem (mRoot, mSceneMgr,
+		CaelumSystem::CAELUM_COMPONENTS_DEFAULT);
+	mCaelumSystem->autoConfigure(CaelumSystem::CAELUM_COMPONENTS_DEFAULT);
+	mRoot->addFrameListener(mCaelumSystem);
+	mWindow->addListener(mCaelumSystem);
+
+	mCaelumSystem->getUniversalClock()->setTimeScale(100);							// ускорим смену времени суток
+	FlatCloudLayer* cloudLayer = mCaelumSystem->getCloudSystem()->createLayer();	// добавим ещё один слой облаков, зададим:
+	cloudLayer->setCloudCover(0.8f);												//  плотность
+	cloudLayer->setCloudSpeed(Vector2(0.0001f, 0.0001f));							//  скорость
+	cloudLayer->setHeight(5000);													//  и высоту
+
 }
 
 
