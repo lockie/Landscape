@@ -16,6 +16,9 @@ This source file is part of the
 */
 #include "LandscapeApplication.hpp"
 
+#include <Noise/Perlin/Perlin.h>
+#include <Modules/ProjectedGrid/ProjectedGrid.h>
+
 using namespace Ogre;
 using namespace Caelum;
 
@@ -43,6 +46,7 @@ void LandscapeApplication::createScene(void)
 	cloudLayer->setCloudCover(0.8f);												//  плотность
 	cloudLayer->setCloudSpeed(Vector2(0.0001f, 0.0001f));							//  скорость
 	cloudLayer->setHeight(5000);													//  и высоту
+	mCaelumSystem->setManageSceneFog(Ogre::FOG_NONE);
 
 	// Земля
 	mCamera->setPosition(Vector3(1683, 50, 2116));									// направляем камеру
@@ -69,6 +73,78 @@ void LandscapeApplication::createScene(void)
 	mTerrainGroup->loadAllTerrains(true);											// собственно, загружаем все запрошенные страницы в синхронном режиме
 	mTerrainGroup->freeTemporaryResources();										// прибираемся
 
+	// Вода
+	mHydrax = new Hydrax::Hydrax(mSceneMgr, mCamera, mWindow->getViewport(0));
+	Hydrax::Module::ProjectedGrid* mModule = new Hydrax::Module::ProjectedGrid(
+			mHydrax,																// указатель на главный класс Hydrax
+			new Hydrax::Noise::Perlin(/* без особых параметров */),					// модуль для создания ряби
+			Ogre::Plane(Ogre::Vector3(0,1,0), Ogre::Vector3(0,0,0)),				// водная поверхность
+			Hydrax::MaterialManager::NM_VERTEX,										// режим карты нормалей
+			Hydrax::Module::ProjectedGrid::Options(64));							// опции сетки
+	mHydrax->setModule(mModule);
+	mHydrax->loadCfg("HydraxDemo.hdx");
+	mOriginalWaterColor = mHydrax->getWaterColor();
+	mHydrax->create();
+	mHydrax->getMaterialManager()->addDepthTechnique(
+		mTerrainGroup->getTerrain(0, 0)->getMaterial()->createTechnique());			// добавить технику глубины в материал страницы ландшафта (0, 0)
+	mCamera->setFarClipDistance(1000000);
+
+}
+
+//-------------------------------------------------------------------------------------
+bool LandscapeApplication::frameEnded(const Ogre::FrameEvent& evt)
+{
+	Vector3 value = mCaelumSystem->getSun()->getSceneNode()->_getDerivedPosition();
+	ColourValue cval = mCaelumSystem->getSun()->getBodyColour();
+	mHydrax->setSunPosition(value);
+	mHydrax->setSunColor(Vector3(cval.r,cval.g,cval.b));
+
+	Caelum::LongReal mJulian = mCaelumSystem->getUniversalClock()->getJulianDay();
+	cval = mCaelumSystem->getSunLightColour(mJulian, mCaelumSystem->getSunDirection(mJulian));
+	mHydrax->setWaterColor(Vector3(cval.r - 0.3, cval.g - 0.2, cval.b));
+
+	Vector3 col = mHydrax->getWaterColor();
+	float height = mHydrax->getSunPosition().y / 10.0f;
+
+	Hydrax::HydraxComponent c = mHydrax->getComponents();
+	if(height < 0)
+	{
+		if(mHydrax->isComponent(Hydrax::HYDRAX_COMPONENT_CAUSTICS))
+			mHydrax->setComponents(Hydrax::HydraxComponent(c ^ Hydrax::HYDRAX_COMPONENT_CAUSTICS));
+	} else
+	{
+		if(!mHydrax->isComponent(Hydrax::HYDRAX_COMPONENT_CAUSTICS))
+			mHydrax->setComponents(Hydrax::HydraxComponent(c | Hydrax::HYDRAX_COMPONENT_CAUSTICS));
+	}
+
+	if(height < -99.0f)
+	{
+		col = mOriginalWaterColor * 0.1f;
+		height = 9999.0f;
+	}
+	else if(height < 1.0f)
+	{
+		col = mOriginalWaterColor * (0.1f + (0.009f * (height + 99.0f)));
+		height = 100.0f / (height + 99.001f);
+	}
+	else if(height < 2.0f)
+	{
+		col += mOriginalWaterColor;
+		col /= 2.0f;
+		float percent = (height - 1.0f);
+		col = (col * percent) + (mOriginalWaterColor * (1.0f - percent));
+	}
+	else
+	{
+		col += mOriginalWaterColor;
+		col	/= 2.0f;
+	}
+	mHydrax->setWaterColor(col);
+	mHydrax->setSunArea(height);
+
+	mHydrax->update(evt.timeSinceLastFrame);
+
+	return true;
 }
 
 

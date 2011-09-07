@@ -111,15 +111,18 @@ include_directories( ${OIS_INCLUDE_DIRS}
 	${OGRE_SAMPLES_INCLUDEPATH}
 	"Caelum/main/include"
 	"${CMAKE_BINARY_DIR}/Caelum/main/include"
+	"Hydrax"
 )
 
 add_subdirectory(Caelum)
+
+add_subdirectory(Hydrax)
 
 add_executable(LandscapeApp WIN32 ${HDRS} ${SRCS})
 
 set_target_properties(LandscapeApp PROPERTIES DEBUG_POSTFIX _d)
 
-target_link_libraries(LandscapeApp ${OGRE_LIBRARIES} ${OGRE_Terrain_LIBRARIES} ${OIS_LIBRARIES} Caelum)
+target_link_libraries(LandscapeApp ${OGRE_LIBRARIES} ${OGRE_Terrain_LIBRARIES} ${OIS_LIBRARIES} Caelum Hydrax)
 
 if(WIN32)
 	install(TARGETS LandscapeApp

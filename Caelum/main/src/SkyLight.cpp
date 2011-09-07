@@ -95,6 +95,10 @@ namespace Caelum
         return mBodyColour;
     }
 
+    Ogre::SceneNode* BaseSkyLight::getSceneNode() const {
+        return mNode;
+    }
+
     void BaseSkyLight::setLightColour (const Ogre::ColourValue &colour) {
         // Store this last colour
         mLightColour = colour;

@@ -103,6 +103,9 @@ namespace Caelum
 		/// Sets the colour to draw the light's body with.
 		virtual void setBodyColour (const Ogre::ColourValue &colour);
 
+		/// get current scene node
+		Ogre::SceneNode *getSceneNode() const;
+
 		/// Get current light colour, as set in setLightColour.
 		const Ogre::ColourValue getLightColour () const;
 

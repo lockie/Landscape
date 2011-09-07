@@ -21,6 +21,7 @@ This source file is part of the
 #include <Terrain/OgreTerrainGroup.h>
 
 #include <Caelum.h>
+#include <Hydrax.h>
 
 #include "BaseApplication.hpp"
 
@@ -32,10 +33,13 @@ public:
 
 protected:
 	virtual void createScene(void);
+	virtual bool frameEnded(const Ogre::FrameEvent& evt);
 
 	Caelum::CaelumSystem* mCaelumSystem;
 	Ogre::TerrainGlobalOptions* mTerrainGlobals;
 	Ogre::TerrainGroup* mTerrainGroup;
+	Hydrax::Hydrax* mHydrax;
+	Ogre::Vector3 mOriginalWaterColor;
 };
 
 #endif // #ifndef __LandscapeApplication_hpp__
