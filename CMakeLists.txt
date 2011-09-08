@@ -112,17 +112,21 @@ include_directories( ${OIS_INCLUDE_DIRS}
 	"Caelum/main/include"
 	"${CMAKE_BINARY_DIR}/Caelum/main/include"
 	"Hydrax"
+	"PagedGeometry/include"
+	"${CMAKE_BINARY_DIR}/PagedGeometry/include"
 )
 
 add_subdirectory(Caelum)
 
 add_subdirectory(Hydrax)
 
+add_subdirectory(PagedGeometry)
+
 add_executable(LandscapeApp WIN32 ${HDRS} ${SRCS})
 
 set_target_properties(LandscapeApp PROPERTIES DEBUG_POSTFIX _d)
 
-target_link_libraries(LandscapeApp ${OGRE_LIBRARIES} ${OGRE_Terrain_LIBRARIES} ${OIS_LIBRARIES} Caelum Hydrax)
+target_link_libraries(LandscapeApp ${OGRE_LIBRARIES} ${OGRE_Terrain_LIBRARIES} ${OIS_LIBRARIES} Caelum Hydrax PagedGeometry)
 
 if(WIN32)
 	install(TARGETS LandscapeApp

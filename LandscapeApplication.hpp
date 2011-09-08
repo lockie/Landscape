@@ -22,6 +22,8 @@ This source file is part of the
 
 #include <Caelum.h>
 #include <Hydrax.h>
+#include <PagedGeometry.h>
+#include <GrassLoader.h>
 
 #include "BaseApplication.hpp"
 
@@ -40,6 +42,8 @@ protected:
 	Ogre::TerrainGroup* mTerrainGroup;
 	Hydrax::Hydrax* mHydrax;
 	Ogre::Vector3 mOriginalWaterColor;
+	Forests::PagedGeometry *grass, *trees, *bushes;
+	Forests::GrassLoader* grassLoader;
 };
 
 #endif // #ifndef __LandscapeApplication_hpp__
