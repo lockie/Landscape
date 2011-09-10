@@ -209,7 +209,7 @@ void LandscapeApplication::createScene(void)
 		if (Math::UnitRandom() < 0.8f) {
 			scale = Math::RangeRandom(0.3f, 0.4f);
 			bushLoader->addTree(fern, position, yaw, scale);
-		} else if (rnd < 0.9) {
+		} else if (Math::UnitRandom() < 0.9) {
 			scale = Math::RangeRandom(0.2f, 0.6f);
 			bushLoader->addTree(mushroom, position, yaw, scale);
 		} else {
